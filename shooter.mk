@@ -67,26 +67,78 @@ PRODUCT_COPY_FILES += \
     frameworks/base/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
     frameworks/base/data/etc/android.hardware.sensor.accelerometer.xml:system/etc/permissions/android.hardware.sensor.accelerometer.xml \
     frameworks/base/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml \
-    frameworks/base/data/etc/android.hardware.telephony.cdma.xml:system/etc/permissions/android.hardware.telephony.cdma.xml
+    frameworks/base/data/etc/android.hardware.telephony.cdma.xml:system/etc/permissions/android.hardware.telephony.cdma.xml \
+    packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:system/etc/permissions/android.software.live_wallpaper.xml
+
+# QCOM Display
+PRODUCT_PACKAGES += \
+    copybit.msm8660 \
+    gralloc.msm8660 \
+    hwcomposer.msm8660 \
+    libgenlock \
+    libmemalloc \
+    liboverlay \
+    libQcomUI \
+    libtilerenderer
+
+# Audio
+PRODUCT_PACKAGES += \
+    audio.a2dp.default \
+    audio_policy.msm8660 \
+    audio.primary.msm8660 \
+    libaudioutils
 
 ## qcom/media
 PRODUCT_PACKAGES += \
     libstagefrighthw \
+    libmm-omxcore \
     libOmxCore \
     libOmxVdec \
     libOmxVenc \
+    libOmxAacEnc \
+    libOmxAmrEnc \
     libdivxdrmdecrypt
+
+# HDMI
+PRODUCT_PACKAGES += \
+    hdmid
 
 ## misc
 PRODUCT_PACKAGES += \
     gps.shooter \
     librs_jni \
-    com.android.future.usb.accessory
+    com.android.future.usb.accessory \
+	Torch
 
 ## cm dsp manager
 PRODUCT_PACKAGES += \
     DSPManager \
     libcyanogen-dsp
+
+# Live Wallpapers
+PRODUCT_PACKAGES += \
+    LiveWallpapers \
+    LiveWallpapersPicker \
+    VisualizationWallpapers \
+    librs_jni
+
+# Filesystem management tools
+PRODUCT_PACKAGES += \
+    make_ext4fs \
+    setup_fs
+
+# for bugmailer
+ifneq ($(TARGET_BUILD_VARIANT),user)
+    PRODUCT_PACKAGES += send_bug
+    PRODUCT_COPY_FILES += \
+        system/extras/bugmailer/bugmailer.sh:system/bin/bugmailer.sh \
+        system/extras/bugmailer/send_bug:system/bin/send_bug
+endif
+
+# Common Qualcomm scripts
+PRODUCT_COPY_FILES += \
+    device/htc/shooter/prebuilt/init.qcom.post_boot.sh:system/etc/init.qcom.post_boot.sh \
+    device/htc/shooter/prebuilt/init.qcom.efs.sync.sh:system/etc/init.qcom.efs.sync.sh
 
 ## dsp Audio
 PRODUCT_COPY_FILES += \
@@ -173,9 +225,6 @@ PRODUCT_COPY_FILES += \
 
 $(call inherit-product-if-exists, vendor/htc/shooter/shooter-vendor.mk)
 
-# common msm8660 configs
-$(call inherit-product, device/htc/msm8660-common/msm8660.mk)
-
 PRODUCT_COPY_FILES += \
      device/htc/shooter/media_profiles.xml:system/etc/media_profiles.xml
 
@@ -189,6 +238,15 @@ $(call inherit-product, frameworks/base/build/phone-hdpi-512-dalvik-heap.mk)
 
 $(call inherit-product, build/target/product/full_base_telephony.mk)
 
+
+# We have enough storage space to hold precise GC data
+PRODUCT_TAGS += dalvik.gc.type-precise
+
+PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
+
+# Device uses high-density artwork where available
+PRODUCT_AAPT_CONFIG := normal hdpi
+PRODUCT_AAPT_PREF_CONFIG := hdpi
 
 PRODUCT_NAME := htc_shooter
 PRODUCT_DEVICE := shooter
