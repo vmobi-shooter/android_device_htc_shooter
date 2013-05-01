@@ -24,11 +24,67 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# 
+# INCLUDED CODE FROM XxXPachaXxX FOR MSM8x60 TARGET
 #
 
 target=`getprop ro.board.platform`
+
 case "$target" in
-    "msm8660")
+    "msm7201a_ffa" | "msm7201a_surf" | "msm7627_ffa" | "msm7627_6x" | "msm7627a"  | "msm7627_surf" | \
+    "qsd8250_surf" | "qsd8250_ffa" | "msm7630_surf" | "msm7630_1x" | "msm7630_fusion" | "qsd8650a_st1x")
+        echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+        echo 90 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+        ;;
+esac
+
+case "$target" in
+    "msm7201a_ffa" | "msm7201a_surf")
+        echo 500000 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+        ;;
+esac
+
+case "$target" in
+    "msm7630_surf" | "msm7630_1x" | "msm7630_fusion")
+        echo 75000 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+        echo 1 > /sys/module/pm2/parameters/idle_sleep_mode
+        ;;
+esac
+
+case "$target" in
+     "msm7201a_ffa" | "msm7201a_surf" | "msm7627_ffa" | "msm7627_6x" | "msm7627_surf" | "msm7630_surf" | "msm7630_1x" | "msm7630_fusion" | "msm7627a" )
+        echo 245760 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+        ;;
+esac
+
+case "$target" in
+     "msm7x30")
+        echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+        echo 50000 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+        echo 90 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+        echo 1 > /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
+        echo 4 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+        chown root.system /sys/devices/system/cpu/mfreq
+        chmod 220 /sys/devices/system/cpu/mfreq
+        chown system /sys/power/perflock
+        ;;
+esac
+
+case "$target" in
+     "msm7k")
+        echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+        echo 50000 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+        echo 90 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+	echo 480000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+        echo 1 > /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
+        chown root.system /sys/devices/system/cpu/mfreq
+        chmod 220 /sys/devices/system/cpu/mfreq
+        chown system /sys/power/perflock
+        ;;
+esac
+
+case "$target" in
+    "msm8660" | "msm8660_csfb")
 	 echo 1 > /sys/module/rpm_resources/enable_low_power/L2_cache
 	 echo 1 > /sys/module/rpm_resources/enable_low_power/pxo
 	 echo 2 > /sys/module/rpm_resources/enable_low_power/vdd_dig
@@ -50,22 +106,97 @@ case "$target" in
 	 echo 1 > /sys/module/pm_8660/modes/cpu1/power_collapse/idle_enabled
 	 echo 1 > /sys/module/pm_8660/modes/cpu0/standalone_power_collapse/idle_enabled
 	 echo 1 > /sys/module/pm_8660/modes/cpu1/standalone_power_collapse/idle_enabled
+	 echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+	 echo "ondemand" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
 	 echo 50000 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
 	 echo 90 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
 	 echo 1 > /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
 	 echo 4 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+	 echo 10 > /sys/devices/system/cpu/cpufreq/ondemand/down_differential
+	 echo 384000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+	 echo 384000 > /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq
 	 chown system /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
 	 chown system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 	 chown system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 	 chown system /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
 	 chown system /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq
-	 chown system /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
 	 chown root.system /sys/devices/system/cpu/mfreq
 	 chmod 220 /sys/devices/system/cpu/mfreq
 	 chown root.system /sys/devices/system/cpu/cpu1/online
-	 chmod 664 /sys/devices/system/cpu/cpu1/online
+	 echo 1 > /sys/devices/system/cpu/cpu1/online
+     chmod 400 /sys/devices/system/cpu/cpu1/online
+         chown system /sys/power/perflock
+         chown system /sys/power/cpufreq_ceiling
+	echo "0,1,2,4,9,15" > /sys/module/lowmemorykiller/parameters/adj
+	echo 1 > /sys/module/lowmemorykiller/parameters/chack_filepages
+	echo 32 > /sys/module/lowmemorykiller/parameters/cost
+	echo 2 > /sys/module/lowmemorykiller/parameters/debug_level
+	echo "2048,3072,4096,6144,8192,12288" > /sys/module/lowmemorykiller/parameters/minfile
+	echo "6379,8125,9871,11919,13665,16855" > /sys/module/lowmemorykiller/parameters/minfree
+	
         ;;
 esac
+
+case "$target" in
+    "msm8960")
+     echo 1 > /sys/module/rpm_resources/enable_low_power/L2_cache
+     echo 1 > /sys/module/rpm_resources/enable_low_power/pxo
+     echo 1 > /sys/module/rpm_resources/enable_low_power/vdd_dig
+     echo 1 > /sys/module/rpm_resources/enable_low_power/vdd_mem
+     echo 1 > /sys/module/pm_8x60/modes/cpu0/power_collapse/suspend_enabled
+     echo 1 > /sys/module/pm_8x60/modes/cpu1/power_collapse/suspend_enabled
+     echo 1 > /sys/module/pm_8x60/modes/cpu0/standalone_power_collapse/suspend_enabled
+     echo 1 > /sys/module/pm_8x60/modes/cpu1/standalone_power_collapse/suspend_enabled
+     echo 1 > /sys/module/pm_8x60/modes/cpu0/standalone_power_collapse/idle_enabled
+     echo 1 > /sys/module/pm_8x60/modes/cpu1/standalone_power_collapse/idle_enabled
+     echo 1 > /sys/module/pm_8x60/modes/cpu0/power_collapse/idle_enabled
+     echo 1 > /sys/module/pm_8x60/modes/cpu1/power_collapse/idle_enabled
+     echo 1 > /sys/module/pm_8660/modes/cpu0/power_collapse/suspend_enabled
+     echo 1 > /sys/module/pm_8660/modes/cpu1/power_collapse/suspend_enabled
+     echo 1 > /sys/module/pm_8660/modes/cpu0/standalone_power_collapse/suspend_enabled
+     echo 1 > /sys/module/pm_8660/modes/cpu1/standalone_power_collapse/suspend_enabled
+     echo 1 > /sys/module/pm_8660/modes/cpu0/standalone_power_collapse/idle_enabled
+     echo 1 > /sys/module/pm_8660/modes/cpu1/standalone_power_collapse/idle_enabled
+     echo 1 > /sys/module/pm_8660/modes/cpu0/power_collapse/idle_enabled
+     echo 1 > /sys/module/pm_8660/modes/cpu1/power_collapse/idle_enabled
+     echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+     echo "ondemand" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor
+     echo 90 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
+     echo 50000 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+     echo 1 > /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
+     echo 4 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+     echo 384000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+     echo 384000 > /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq
+     chown system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+     chown system /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+     chown system /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq
+     chown system /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq
+     chown root.system /sys/devices/system/cpu/mfreq
+     chmod 220 /sys/devices/system/cpu/mfreq
+     chown root.system /sys/devices/system/cpu/cpu1/online
+     chmod 664 /sys/devices/system/cpu/cpu1/online
+        ;;
+esac
+
+case "$target" in
+    "msm7627_ffa" | "msm7627_surf" | "msm7627a" | "msm7627_6x")
+        echo 25000 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+        ;;
+esac
+
+case "$target" in
+    "qsd8250_surf" | "qsd8250_ffa" | "qsd8650a_st1x")
+        echo 50000 > /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
+        ;;
+esac
+
+case "$target" in
+    "qsd8650a_st1x")
+        mount -t debugfs none /sys/kernel/debug
+    ;;
+esac
+
+chown system /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
 
 emmc_boot=`getprop ro.emmc`
 case "$emmc_boot"
@@ -77,10 +208,24 @@ case "$emmc_boot"
     ;;
 esac
 
+
 # Post-setup services
 case "$target" in
-    "msm8660")
-        start mpdecision
+    "msm8660" | "msm8660_csfb")
         start thermald
     ;;
 esac
+
+if [ -e /system/bin/setmemvals ]; then
+	/system/bin/setmemvals
+	echo "*** setmemvals executed! ***"
+fi
+if [ -e /system/bin/setsettings ]; then
+	/system/bin/setsettings
+	sleep 1
+	echo "*** setsettings executed! ***"
+fi
+if [ -e /system/bin/setsettings ]; then
+	rm /system/bin/setsettings
+	echo "*** setsettings removed! (no longer needed) ***"
+fi

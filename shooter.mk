@@ -30,9 +30,9 @@ PRODUCT_COPY_FILES += \
 ## ramdisk stuffs
 PRODUCT_COPY_FILES += \
     device/htc/shooter/prebuilt/init:root/init \
-    device/htc/shooter/init.shooter.rc:root/init.shooter.rc \
-    device/htc/shooter/ueventd.shooter.rc:root/ueventd.shooter.rc \
-    device/htc/shooter/init.shooter.usb.rc:root/init.shooter.usb.rc
+    device/htc/shooter/prebuilt/init.shooter.rc:root/init.shooter.rc \
+    device/htc/shooter/prebuilt/ueventd.shooter.rc:root/ueventd.shooter.rc \
+    device/htc/shooter/prebuilt/init.shooter.usb.rc:root/init.shooter.usb.rc
 
 ## (2) Also get non-open-source specific aspects if available
 $(call inherit-product-if-exists, vendor/htc/shooter/shooter-vendor.mk)
@@ -127,18 +127,9 @@ PRODUCT_PACKAGES += \
     make_ext4fs \
     setup_fs
 
-# for bugmailer
-ifneq ($(TARGET_BUILD_VARIANT),user)
-    PRODUCT_PACKAGES += send_bug
-    PRODUCT_COPY_FILES += \
-        system/extras/bugmailer/bugmailer.sh:system/bin/bugmailer.sh \
-        system/extras/bugmailer/send_bug:system/bin/send_bug
-endif
-
 # Common Qualcomm scripts
 PRODUCT_COPY_FILES += \
-    device/htc/shooter/prebuilt/init.qcom.post_boot.sh:system/etc/init.qcom.post_boot.sh \
-    device/htc/shooter/prebuilt/init.qcom.efs.sync.sh:system/etc/init.qcom.efs.sync.sh
+    device/htc/shooter/prebuilt/init.qcom.post_boot.sh:system/etc/init.qcom.post_boot.sh
 
 ## dsp Audio
 PRODUCT_COPY_FILES += \
@@ -191,9 +182,6 @@ PRODUCT_COPY_FILES += \
     device/htc/shooter/firmware/leia_pfp_470.fw:system/etc/firmware/leia_pfp_470.fw \
     device/htc/shooter/firmware/leia_pm4_470.fw:system/etc/firmware/leia_pm4_470.fw 
 
-# QC thermald config
-PRODUCT_COPY_FILES += device/htc/shooter/prebuilt/thermald.conf:system/etc/thermald.conf
-
 ## we have enough storage space to hold precise GC data
 PRODUCT_TAGS += dalvik.gc.type-precise
 
@@ -211,7 +199,7 @@ PRODUCT_COPY_FILES += \
 
 ## KernAl and modules
 ifeq ($(TARGET_PREBUILT_KERNEL),)
-LOCAL_KERNEL := device/htc/shooter/kernAl
+LOCAL_KERNEL := device/htc/shooter/prebuilt/kernAl
 else
 LOCAL_KERNEL := $(TARGET_PREBUILT_KERNEL)
 endif
@@ -221,11 +209,13 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_COPY_FILES += \
     device/htc/shooter/modules/bcm4329.ko:system/lib/modules/bcm4329.ko \
-    device/htc/shooter/modules/sequans_sdio.ko:system/lib/modules/sequans_sdio.ko 
+    device/htc/shooter/modules/sequans_sdio.ko:system/lib/modules/sequans_sdio.ko \
+    device/htc/shooter/modules/wimaxdbg.ko:system/lib/modules/wimaxdbg.ko \
+    device/htc/shooter/modules/wimaxuart.ko:system/lib/modules/wimaxuart.ko
 
 ## HAX
 PRODUCT_COPY_FILES += \
-    device/htc/shooter/prebuilt/libcryp98.so:system/lib/libcryp98.so
+    device/htc/shooter/prebuilt/libcrypto.so:system/lib/libcrypto.so
 
 $(call inherit-product-if-exists, vendor/htc/shooter/shooter-vendor.mk)
 
