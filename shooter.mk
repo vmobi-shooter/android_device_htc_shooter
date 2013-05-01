@@ -20,19 +20,19 @@ PRODUCT_COPY_FILES += \
 
 ## recovery and custom charging
 PRODUCT_COPY_FILES += \
-    device/htc/shooter/prebuilt/init:recovery/root/init \
     device/htc/shooter/recovery/sbin/choice_fn:recovery/root/sbin/choice_fn \
     device/htc/shooter/recovery/sbin/power_test:recovery/root/sbin/power_test \
     device/htc/shooter/recovery/sbin/offmode_charging:recovery/root/sbin/offmode_charging \
     device/htc/shooter/recovery/sbin/detect_key:recovery/root/sbin/detect_key \
     device/htc/shooter/recovery/sbin/htcbatt:recovery/root/sbin/htcbatt
+#    device/htc/shooter/prebuilt/init:recovery/root/init \
 
 ## ramdisk stuffs
 PRODUCT_COPY_FILES += \
-    device/htc/shooter/prebuilt/init:root/init \
     device/htc/shooter/prebuilt/init.shooter.rc:root/init.shooter.rc \
     device/htc/shooter/prebuilt/ueventd.shooter.rc:root/ueventd.shooter.rc \
     device/htc/shooter/prebuilt/init.shooter.usb.rc:root/init.shooter.usb.rc
+#    device/htc/shooter/prebuilt/init:root/init \
 
 ## (2) Also get non-open-source specific aspects if available
 $(call inherit-product-if-exists, vendor/htc/shooter/shooter-vendor.mk)
