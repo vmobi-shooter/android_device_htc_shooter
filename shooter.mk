@@ -202,10 +202,12 @@ PRODUCT_AAPT_CONFIG := normal hdpi
 PRODUCT_AAPT_PREF_CONFIG := hdpi
 PRODUCT_LOCALES += hdpi
 
-## misc
+## Config Files
 PRODUCT_COPY_FILES += \
     device/htc/shooter/vold.fstab:system/etc/vold.fstab \
-    device/htc/shooter/apns-conf.xml:system/etc/apns-conf.xml
+    device/htc/shooter/configs/apns-conf.xml:system/etc/apns-conf.xml \
+    device/htc/shooter/configs/media_profiles.xml:system/etc/media_profiles.xml \
+    device/htc/shooter/configs/voicemail-conf.xml:system/etc/voicemail-conf.xml \
 
 ## KernAl and modules
 ifeq ($(TARGET_PREBUILT_KERNEL),)
@@ -226,9 +228,6 @@ PRODUCT_COPY_FILES += \
     device/htc/shooter/prebuilt/libcryp98.so:system/lib/libcryp98.so
 
 $(call inherit-product-if-exists, vendor/htc/shooter/shooter-vendor.mk)
-
-PRODUCT_COPY_FILES += \
-     device/htc/shooter/media_profiles.xml:system/etc/media_profiles.xml
 
 ## media profiles and capabilities spec
 $(call inherit-product, device/htc/shooter/media_a1026.mk)
